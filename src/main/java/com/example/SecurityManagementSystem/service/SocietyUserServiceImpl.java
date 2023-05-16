@@ -2,10 +2,13 @@ package com.example.SecurityManagementSystem.service;
 
 import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.entity.User;
+import com.example.SecurityManagementSystem.exception.SocietyUserNotFoundException;
 import com.example.SecurityManagementSystem.repository.SocietyUserRepository;
 import com.example.SecurityManagementSystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SocietyUserServiceImpl implements SocietyUserService{
@@ -17,11 +20,12 @@ public class SocietyUserServiceImpl implements SocietyUserService{
     private UserRepository userRepository;
 
     @Override
-    public SocietyUser getSocietyUserById(Long userId) {
-        if(userRepository.findById(userId).isPresent()){
-            return societyUserRepository.findByUserUserId(userId);
+    public SocietyUser getSocietyUserById(Long userId) throws SocietyUserNotFoundException {
+        Optional<SocietyUser> societyUser = societyUserRepository.findByUserUserId(userId);
+        if (!societyUser.isPresent()) {
+            throw new SocietyUserNotFoundException("Society member not found");
         }
-        return null;
+        return societyUser.get();
     }
 
     @Override
@@ -36,27 +40,31 @@ public class SocietyUserServiceImpl implements SocietyUserService{
     }
 
     @Override
-    public SocietyUser updateSocietyUser(Long userId, SocietyUser societyUser) {
-        SocietyUser societyUser1 = societyUserRepository.findByUserUserId(userId);
-        if (societyUser1 == null) {
-            return null;
+    public SocietyUser updateSocietyUser(Long userId, SocietyUser societyUser) throws SocietyUserNotFoundException {
+        Optional<SocietyUser> societyUser1 = societyUserRepository.findByUserUserId(userId);
+        if (!societyUser1.isPresent()) {
+            throw new SocietyUserNotFoundException("Society member not found");
         }
-        if (societyUser1.getIsAdmin() != societyUser.getIsAdmin()){
-            societyUser1.setIsAdmin(societyUser.getIsAdmin());
+        if (societyUser1.get().getIsAdmin() != societyUser.getIsAdmin()){
+            societyUser1.get().setIsAdmin(societyUser.getIsAdmin());
         }
-        if (!societyUser1.getOwnerName().equals(societyUser.getOwnerName())){
-            societyUser1.setOwnerName(societyUser.getOwnerName());
+        if (!societyUser1.get().getOwnerName().equals(societyUser.getOwnerName())){
+            societyUser1.get().setOwnerName(societyUser.getOwnerName());
         }
-        if (!societyUser1.getFlatNo().equals(societyUser.getFlatNo())){
-            societyUser1.setFlatNo(societyUser.getFlatNo());
+        if (!societyUser1.get().getFlatNo().equals(societyUser.getFlatNo())){
+            societyUser1.get().setFlatNo(societyUser.getFlatNo());
         }
-        return societyUserRepository.save(societyUser1);
+        return societyUserRepository.save(societyUser1.get());
 
     }
 
     @Override
-    public void deleteSocietyUser(Long userId) {
-        societyUserRepository.delete(societyUserRepository.findByUserUserId(userId));
+    public void deleteSocietyUser(Long userId) throws SocietyUserNotFoundException {
+        Optional<SocietyUser> societyUser = societyUserRepository.findByUserUserId(userId);
+        if (!societyUser.isPresent()) {
+            throw new SocietyUserNotFoundException("Society member not found");
+        }
+        societyUserRepository.delete(societyUser.get());
         userRepository.deleteById(userId);
     }
 }

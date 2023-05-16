@@ -1,6 +1,8 @@
 package com.example.SecurityManagementSystem.service;
 
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.VisitorAlreadyExitException;
+import com.example.SecurityManagementSystem.exception.VisitorNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -8,9 +10,9 @@ import java.util.List;
 
 @Service
 public interface VisitorService {
-    Visitor updateVisitorOutTime(String visitorName, String flatNo, String outTime);
+    Visitor updateVisitorOutTime(Visitor visitor) throws Exception;
 
-    Visitor addVisitor(Visitor visitor);
+    Visitor addVisitor(Visitor visitor, String guardName);
 
     List<Visitor> getAllVisitorsByDate(Date date);
 
@@ -18,7 +20,7 @@ public interface VisitorService {
 
     List<Visitor> getAllVisitorsByAge(Integer age);
 
-    List<Visitor> getAllVisitorsByName(String visitorName);
-
     List<Visitor> getAllVisitors();
+
+    List<Visitor> getAllVisitorsByFlatNo(String flatNo);
 }

@@ -28,6 +28,7 @@ public class SocietyUser {
     private Long sUserId;
     @NotNull
     @Size(min = 4, max = 4)
+    @Column(unique = true)
     private String flatNo;
     private Boolean isAdmin;
     @NotNull

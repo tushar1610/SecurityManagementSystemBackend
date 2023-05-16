@@ -1,7 +1,9 @@
 package com.example.SecurityManagementSystem.controller;
 
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.VisitorNotCreatedException;
 import com.example.SecurityManagementSystem.service.VisitorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +21,6 @@ public class VisitorController {
         return visitorService.getAllVisitors();
     }
 
-    @GetMapping("/getAllVisitorsByName/{visitorName}")
-    public List<Visitor> getAllVisitorsByName(@PathVariable String visitorName){
-        return visitorService.getAllVisitorsByName(visitorName);
-    }
-
     @GetMapping("/getAllVisitorsByAge/{age}")
     public List<Visitor> getAllVisitorsByAge(@PathVariable Integer age){
         return visitorService.getAllVisitorsByAge(age);
@@ -34,27 +31,29 @@ public class VisitorController {
         return visitorService.getAllVisitorsByGender(gender);
     }
 
+    @GetMapping("/getAllVisitorsByFlatNo/{flatNo}")
+    public List<Visitor> getAllVisitorsByFlatNo(@PathVariable String flatNo){
+        return visitorService.getAllVisitorsByFlatNo(flatNo);
+    }
+
     @GetMapping("/getAllVisitorsByDate/{date}")
     public List<Visitor> getAllVisitorsByDate(@PathVariable Date date){
         return visitorService.getAllVisitorsByDate(date);
     }
 
-    @PostMapping("/addVisitor")
-    public Visitor addVisitor(@RequestBody Visitor visitor){
-        Visitor visitor1 = visitorService.addVisitor(visitor);
+    @PostMapping("/addVisitor/{guardName}")
+    public Visitor addVisitor(@PathVariable String guardName, @RequestBody @Valid Visitor visitor) throws VisitorNotCreatedException {
+        Visitor visitor1 = visitorService.addVisitor(visitor, guardName);
         if (visitor1 == null) {
-            //return VisitorNotCreatedException
+            throw new VisitorNotCreatedException("Visitor cannot be created. Try again later.");
         }
         return visitor1;
     }
 
-    @PutMapping("/updateVisitorOutTime/{visitorName}/{flatNo}/{outTime}")
-    public Visitor updateVisitorOutTime(@PathVariable String visitorName, @PathVariable String flatNo, @PathVariable String outTime){
-        Visitor visitor = visitorService.updateVisitorOutTime(visitorName, flatNo, outTime);
-        if (visitor == null) {
-            //return VisitorNotAvailableException
-        }
-        return visitor;
+    @PutMapping("/updateVisitorOutTime")
+    public Visitor updateVisitorOutTime(@RequestBody Visitor visitor) throws Exception {
+        return visitorService.updateVisitorOutTime(visitor);
+
     }
 
 }

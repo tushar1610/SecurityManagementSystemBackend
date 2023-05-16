@@ -16,14 +16,8 @@ import lombok.NoArgsConstructor;
 public class GuardUser {
 
     @Id
-    @SequenceGenerator(
-            name = "guard_user_id_sequence",
-            sequenceName = "guard_user_id_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            generator = "guard_user_id_sequence",
-            strategy = GenerationType.SEQUENCE
+            strategy = GenerationType.AUTO
     )
     private Long gUserId;
     @NotNull

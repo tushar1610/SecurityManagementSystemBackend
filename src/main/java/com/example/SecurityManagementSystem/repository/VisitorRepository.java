@@ -11,13 +11,15 @@ import java.util.Optional;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
-    Optional<Visitor> findByVisitorNameAndSocietyUsersFlatNo(String visitorName, String flatNo);
+    List<Visitor> findAllBySocietyUserFlatNo(String flatNo);
+
+    Optional<Visitor> findByVisitorNameAndSocietyUserFlatNo(String visitorName, String flatNo);
 
     List<Visitor> findAllByDate(Date date);
 
     List<Visitor> findAllByAge(Integer age);
     List<Visitor> findAllByGender(String gender);
 
-    List<Visitor> findAllByVisitorName(String visitorName);
+    Optional<Visitor> findByVisitorName(String visitorName);
 
 }

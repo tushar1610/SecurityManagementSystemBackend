@@ -1,13 +1,17 @@
 package com.example.SecurityManagementSystem.service;
 
+import com.example.SecurityManagementSystem.entity.GuardUser;
+import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.VisitorAlreadyExitException;
+import com.example.SecurityManagementSystem.exception.VisitorNotFoundException;
+import com.example.SecurityManagementSystem.repository.GuardUserRepository;
 import com.example.SecurityManagementSystem.repository.SocietyUserRepository;
 import com.example.SecurityManagementSystem.repository.VisitorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class VisitorServiceImpl implements VisitorService{
@@ -15,19 +19,43 @@ public class VisitorServiceImpl implements VisitorService{
     @Autowired
     private VisitorRepository visitorRepository;
 
+    @Autowired
+    private SocietyUserRepository societyUserRepository;
+
+    @Autowired
+    private GuardUserRepository guardUserRepository;
+
     @Override
-    public Visitor updateVisitorOutTime(String visitorName, String flatNo, String outTime) {
-        if(!visitorRepository.findByVisitorNameAndSocietyUsersFlatNo(visitorName, flatNo).isPresent()){
-            return null;
+    public Visitor updateVisitorOutTime(Visitor visitor) throws Exception {
+        Optional<Visitor> visitor1 = visitorRepository.findByVisitorName(visitor.getVisitorName());
+        if (!visitor1.isPresent()) {
+            throw new VisitorNotFoundException("No such visitor entered.");
         }
-        Visitor visitor = visitorRepository.findByVisitorNameAndSocietyUsersFlatNo(visitorName, flatNo).get();
-        visitor.setOutTime(outTime);
-        return visitorRepository.save(visitor);
+        if (Objects.equals(visitor1.get().getOutTime(), "")){
+            visitor1.get().setOutTime(visitor.getOutTime());
+        } else {
+            throw new VisitorAlreadyExitException("This visitor has already exited.");
+        }
+        return visitorRepository.save(visitor1.get());
     }
 
     @Override
-    public Visitor addVisitor(Visitor visitor) {
-        return visitorRepository.save(visitor);
+    public Visitor addVisitor(Visitor visitor, String guardName) {
+        SocietyUser societyUser = societyUserRepository.findByFlatNo(visitor.getSocietyUser().getFlatNo());
+        System.out.println(societyUser.getOwnerName());
+        Visitor visitor1 = Visitor.builder()
+                .age(visitor.getAge())
+                .contactNo(visitor.getContactNo())
+                .gender(visitor.getGender())
+                .date(visitor.getDate())
+                .inTime(visitor.getInTime())
+                .outTime("")
+                .purpose(visitor.getPurpose())
+                .visitorName(visitor.getVisitorName())
+                .societyUser(societyUser)
+                .guardName(guardName)
+                .build();
+        return visitorRepository.save(visitor1);
     }
 
     @Override
@@ -46,12 +74,12 @@ public class VisitorServiceImpl implements VisitorService{
     }
 
     @Override
-    public List<Visitor> getAllVisitorsByName(String visitorName) {
-        return visitorRepository.findAllByVisitorName(visitorName);
+    public List<Visitor> getAllVisitors() {
+        return visitorRepository.findAll();
     }
 
     @Override
-    public List<Visitor> getAllVisitors() {
-        return visitorRepository.findAll();
+    public List<Visitor> getAllVisitorsByFlatNo(String flatNo) {
+        return visitorRepository.findAllBySocietyUserFlatNo(flatNo);
     }
 }

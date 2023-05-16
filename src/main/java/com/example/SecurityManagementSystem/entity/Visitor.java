@@ -20,14 +20,8 @@ import java.util.List;
 public class Visitor {
 
     @Id
-    @SequenceGenerator(
-            name = "visitor_id_sequence",
-            sequenceName = "visitor_id_sequence",
-            allocationSize = 1
-    )
     @GeneratedValue(
-            generator = "visitor_id_sequence",
-            strategy = GenerationType.SEQUENCE
+            strategy = GenerationType.AUTO
     )
     private Long visitorId;
     @NotNull
@@ -42,19 +36,13 @@ public class Visitor {
     private String date;
     @NotNull
     private String inTime;
-    @NotNull
     private String outTime;
+    @NotNull
+    private String guardName;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = SocietyUser.class)
     @JoinColumn(
             name = "SocietyUserFlatNo",
             referencedColumnName = "flatNo"
     )
-    private List<SocietyUser> societyUsers;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "GuardUserId",
-            referencedColumnName = "gUserId"
-    )
-    private GuardUser guard;
-
+    private SocietyUser societyUser;
 }
