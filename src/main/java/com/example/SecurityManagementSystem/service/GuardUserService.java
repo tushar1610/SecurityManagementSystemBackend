@@ -12,7 +12,7 @@ public interface GuardUserService {
 
     GuardUser getGuardUserByUserId(Long userId) throws GuardUserNotFoundException;
 
-    GuardUser addGuadUser(GuardUser guardUser);
+    GuardUser addGuardUser(GuardUser guardUser);
 
     GuardUser updateGuardUserByUserId(Long userId, GuardUser guardUser) throws GuardUserNotFoundException;
 

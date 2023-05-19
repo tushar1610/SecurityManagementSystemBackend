@@ -29,7 +29,7 @@ public class GuardUserController {
 
     @PostMapping("/addGuardUser")
     public GuardUser addGuardUser(@RequestBody @Valid GuardUser guardUser) throws GuardUserNotCreatedException {
-        GuardUser guardUser1 = guardUserService.addGuadUser(guardUser);
+        GuardUser guardUser1 = guardUserService.addGuardUser(guardUser);
         if (guardUser1 == null) {
             throw new GuardUserNotCreatedException("Guard member cannot be created. Try again later.");
         }

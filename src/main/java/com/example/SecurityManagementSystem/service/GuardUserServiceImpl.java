@@ -40,7 +40,7 @@ public class GuardUserServiceImpl implements GuardUserService{
     }
 
     @Override
-    public GuardUser addGuadUser(GuardUser guardUser) {
+    public GuardUser addGuardUser(GuardUser guardUser) {
         return guardUserRepository.save(guardUser);
     }
 
