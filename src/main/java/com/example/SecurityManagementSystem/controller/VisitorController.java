@@ -56,4 +56,9 @@ public class VisitorController {
 
     }
 
+    @PutMapping("/updateApprovalStatus/{visitorId}")
+    public boolean updateVisitorApprovalStatus(@PathVariable Long visitorId, @RequestBody Visitor visitor){
+        return visitorService.updateVisitorApprovalStatus(visitorId, visitor);
+    }
+
 }

@@ -1,8 +1,6 @@
 package com.example.SecurityManagementSystem.service;
 
 import com.example.SecurityManagementSystem.entity.Visitor;
-import com.example.SecurityManagementSystem.exception.VisitorAlreadyExitException;
-import com.example.SecurityManagementSystem.exception.VisitorNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,4 +21,6 @@ public interface VisitorService {
     List<Visitor> getAllVisitors();
 
     List<Visitor> getAllVisitorsByFlatNo(String flatNo);
+
+    boolean updateVisitorApprovalStatus(Long visitorId, Visitor visitor);
 }

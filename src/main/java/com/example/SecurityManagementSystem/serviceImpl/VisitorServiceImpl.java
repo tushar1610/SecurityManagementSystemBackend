@@ -1,4 +1,4 @@
-package com.example.SecurityManagementSystem.service;
+package com.example.SecurityManagementSystem.serviceImpl;
 
 import com.example.SecurityManagementSystem.entity.Notification;
 import com.example.SecurityManagementSystem.entity.SocietyUser;
@@ -8,6 +8,7 @@ import com.example.SecurityManagementSystem.exception.VisitorNotFoundException;
 import com.example.SecurityManagementSystem.repository.NotificationRepository;
 import com.example.SecurityManagementSystem.repository.SocietyUserRepository;
 import com.example.SecurityManagementSystem.repository.VisitorRepository;
+import com.example.SecurityManagementSystem.service.VisitorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class VisitorServiceImpl implements VisitorService{
+public class VisitorServiceImpl implements VisitorService {
 
     public static final Logger logger = LoggerFactory.getLogger(VisitorServiceImpl.class);
 
@@ -98,5 +99,17 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public List<Visitor> getAllVisitorsByFlatNo(String flatNo) {
         return visitorRepository.findAllBySocietyUserFlatNo(flatNo);
+    }
+
+    @Override
+    public boolean updateVisitorApprovalStatus(Long visitorId, Visitor visitor) {
+        Optional<Visitor> requestedVisitor = visitorRepository.findById(visitorId);
+        if (requestedVisitor.isPresent()){
+            requestedVisitor.get().setIsApproved(visitor.getIsApproved());
+            requestedVisitor.get().setApproverName(visitor.getApproverName());
+            visitorRepository.save(requestedVisitor.get());
+            return true;
+        }
+        return false;
     }
 }

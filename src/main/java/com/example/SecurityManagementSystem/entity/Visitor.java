@@ -39,6 +39,8 @@ public class Visitor {
     private String outTime;
     @NotNull
     private String guardName;
+    private Boolean isApproved;
+    private String approverName;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = SocietyUser.class)
     @JoinColumn(
             name = "SocietyUserFlatNo",

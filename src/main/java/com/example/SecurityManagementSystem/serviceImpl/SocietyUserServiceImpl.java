@@ -1,10 +1,11 @@
-package com.example.SecurityManagementSystem.service;
+package com.example.SecurityManagementSystem.serviceImpl;
 
 import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.entity.User;
 import com.example.SecurityManagementSystem.exception.SocietyUserNotFoundException;
 import com.example.SecurityManagementSystem.repository.SocietyUserRepository;
 import com.example.SecurityManagementSystem.repository.UserRepository;
+import com.example.SecurityManagementSystem.service.SocietyUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class SocietyUserServiceImpl implements SocietyUserService{
+public class SocietyUserServiceImpl implements SocietyUserService {
 
     public static final Logger logger = LoggerFactory.getLogger(SocietyUserServiceImpl.class);
 

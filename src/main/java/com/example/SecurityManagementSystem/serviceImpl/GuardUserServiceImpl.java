@@ -1,9 +1,10 @@
-package com.example.SecurityManagementSystem.service;
+package com.example.SecurityManagementSystem.serviceImpl;
 
 import com.example.SecurityManagementSystem.entity.GuardUser;
 import com.example.SecurityManagementSystem.exception.GuardUserNotFoundException;
 import com.example.SecurityManagementSystem.repository.GuardUserRepository;
 import com.example.SecurityManagementSystem.repository.UserRepository;
+import com.example.SecurityManagementSystem.service.GuardUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GuardUserServiceImpl implements GuardUserService{
+public class GuardUserServiceImpl implements GuardUserService {
 
     public static final Logger logger = LoggerFactory.getLogger(GuardUserServiceImpl.class);
 
