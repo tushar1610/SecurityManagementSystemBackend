@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -41,6 +42,7 @@ public class VisitorServiceImpl implements VisitorService {
         }
         if (Objects.equals(visitor1.get().getOutTime(), "")){
             visitor1.get().setOutTime(visitor.getOutTime());
+            visitor1.get().setVisitDuration(Duration.between(visitor.getInTime(), visitor.getOutTime()));
         } else {
             logger.error("OutTime is not null.");
             throw new VisitorAlreadyExitException("This visitor has already exited.");
@@ -57,7 +59,7 @@ public class VisitorServiceImpl implements VisitorService {
                 .gender(visitor.getGender())
                 .date(visitor.getDate())
                 .inTime(visitor.getInTime())
-                .outTime("")
+                .outTime(null)
                 .purpose(visitor.getPurpose())
                 .visitorName(visitor.getVisitorName())
                 .societyUser(societyUser)

@@ -48,7 +48,7 @@ public class SocietyUserServiceImpl implements SocietyUserService {
     }
 
     @Override
-    public SocietyUser updateSocietyUser(Long userId, SocietyUser societyUser) throws SocietyUserNotFoundException {
+    public SocietyUser updateSocietyUserByUserId(Long userId, SocietyUser societyUser) throws SocietyUserNotFoundException {
         Optional<SocietyUser> societyUser1 = societyUserRepository.findByUserUserId(userId);
         if (!societyUser1.isPresent()) {
             logger.error("No such society member.");

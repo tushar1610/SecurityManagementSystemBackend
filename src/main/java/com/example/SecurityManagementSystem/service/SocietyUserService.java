@@ -9,7 +9,7 @@ public interface SocietyUserService {
 
     SocietyUser addSocietyUser(SocietyUser societyUser);
 
-    SocietyUser updateSocietyUser(Long userId, SocietyUser societyUser) throws SocietyUserNotFoundException;
+    SocietyUser updateSocietyUserByUserId(Long userId, SocietyUser societyUser) throws SocietyUserNotFoundException;
 
     void deleteSocietyUser(Long userId) throws SocietyUserNotFoundException;
 }

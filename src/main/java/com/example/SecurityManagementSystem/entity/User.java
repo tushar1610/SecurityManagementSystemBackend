@@ -26,6 +26,7 @@ public class User {
     private String userName;
     private Integer age;
     private String contactNo;
+    @Column(unique = true)
     @Email
     private String email;
     @Size(min = 3, max = 12)

@@ -28,10 +28,10 @@ public class SocietyUserController {
         return societyUser1;
     }
 
-    @PutMapping("/updateSocietyUser/{userId}")
-    public SocietyUser updateSocietyUser(@PathVariable Long userId, @RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotFoundException {
+    @PutMapping("/updateSocietyUserByUserId/{userId}")
+    public SocietyUser updateSocietyUserByUserId(@PathVariable Long userId, @RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotFoundException {
 
-        return societyUserService.updateSocietyUser(userId, societyUser);
+        return societyUserService.updateSocietyUserByUserId(userId, societyUser);
     }
 
     @DeleteMapping("/deleteSocietyUser/{userId}")

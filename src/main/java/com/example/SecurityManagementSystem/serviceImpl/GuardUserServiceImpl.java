@@ -55,7 +55,7 @@ public class GuardUserServiceImpl implements GuardUserService {
         if (!guardUser1.get().getShiftTime().equals(guardUser.getShiftTime())){
             guardUser1.get().setShiftTime(guardUser.getShiftTime());
         }
-        if (guardUser1.get().getAddress().equals(guardUser.getAddress())){
+        if (!guardUser1.get().getAddress().equals(guardUser.getAddress())){
             guardUser1.get().setAddress(guardUser.getAddress());
         }
         return guardUserRepository.save(guardUser1.get());

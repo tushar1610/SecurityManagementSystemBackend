@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,10 +36,11 @@ public class Visitor {
     @NotNull
     private String purpose;
     @NotNull
-    private String date;
+    private LocalDate date;
     @NotNull
-    private String inTime;
-    private String outTime;
+    private LocalTime inTime;
+    private LocalTime outTime;
+    private Duration visitDuration;
     @NotNull
     private String guardName;
     private Boolean isApproved;
