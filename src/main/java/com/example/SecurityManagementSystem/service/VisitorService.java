@@ -3,6 +3,7 @@ package com.example.SecurityManagementSystem.service;
 import com.example.SecurityManagementSystem.entity.Visitor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +11,9 @@ import java.util.List;
 public interface VisitorService {
     Visitor updateVisitorOutTime(Visitor visitor) throws Exception;
 
-    Visitor addVisitor(Visitor visitor, String guardName);
+    Visitor addVisitor(Visitor visitor);
 
-    List<Visitor> getAllVisitorsByDate(Date date);
+    List<Visitor> getAllVisitorsByDate(LocalDate date);
 
     List<Visitor> getAllVisitorsByGender(String gender);
 

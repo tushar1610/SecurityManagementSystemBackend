@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO
+            strategy = GenerationType.IDENTITY
     )
     private Long userId;
     @NotNull
@@ -29,8 +29,8 @@ public class User {
     @Column(unique = true)
     @Email
     private String email;
-    @Size(min = 3, max = 12)
     private String password;
     private String gender;
+    private String role;
 
 }

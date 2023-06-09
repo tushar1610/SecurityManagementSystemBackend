@@ -8,6 +8,7 @@ import com.example.SecurityManagementSystem.service.GuardUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class GuardUserServiceImpl implements GuardUserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public List<GuardUser> getAllGuardUsers() {
@@ -42,6 +46,7 @@ public class GuardUserServiceImpl implements GuardUserService {
 
     @Override
     public GuardUser addGuardUser(GuardUser guardUser) {
+        guardUser.getUser().setPassword(passwordEncoder.encode(guardUser.getUser().getPassword()));
         return guardUserRepository.save(guardUser);
     }
 

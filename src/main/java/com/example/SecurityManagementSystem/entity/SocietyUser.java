@@ -16,14 +16,8 @@ import lombok.NoArgsConstructor;
 public class SocietyUser {
 
     @Id
-//    @SequenceGenerator(
-//            name = "society_user_id_sequence",
-//            sequenceName = "society_user_id_sequence",
-//            allocationSize = 1
-//    )
     @GeneratedValue(
-//            generator = "society_user_id_sequence",
-            strategy = GenerationType.AUTO
+            strategy = GenerationType.IDENTITY
     )
     private Long sUserId;
     @NotNull

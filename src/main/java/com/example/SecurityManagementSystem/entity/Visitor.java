@@ -24,7 +24,7 @@ public class Visitor {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.AUTO
+            strategy = GenerationType.IDENTITY
     )
     private Long visitorId;
     @NotNull
@@ -37,10 +37,9 @@ public class Visitor {
     private String purpose;
     @NotNull
     private LocalDate date;
-    @NotNull
     private LocalTime inTime;
     private LocalTime outTime;
-    private Duration visitDuration;
+    private LocalTime visitDuration;
     @NotNull
     private String guardName;
     private Boolean isApproved;

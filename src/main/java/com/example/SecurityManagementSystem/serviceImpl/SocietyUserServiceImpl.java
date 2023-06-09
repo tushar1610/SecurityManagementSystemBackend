@@ -9,8 +9,10 @@ import com.example.SecurityManagementSystem.service.SocietyUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +25,9 @@ public class SocietyUserServiceImpl implements SocietyUserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public SocietyUser getSocietyUserById(Long userId) throws SocietyUserNotFoundException {
@@ -38,6 +43,7 @@ public class SocietyUserServiceImpl implements SocietyUserService {
     @Override
     public SocietyUser addSocietyUser(SocietyUser societyUser) {
         User user = societyUser.getUser();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User user1 = userRepository.save(user);
         if (user1.getUserId() == null){
             logger.error("User data cannot be added.");
@@ -77,5 +83,10 @@ public class SocietyUserServiceImpl implements SocietyUserService {
         societyUserRepository.delete(societyUser.get());
         userRepository.deleteById(userId);
         logger.info("Society member deletion successful.");
+    }
+
+    @Override
+    public List<SocietyUser> getAllSocietyUsers() {
+        return societyUserRepository.findAll();
     }
 }

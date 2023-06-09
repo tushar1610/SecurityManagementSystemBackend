@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -40,9 +42,9 @@ public class VisitorServiceImpl implements VisitorService {
             logger.error("Visitor data not available.");
             throw new VisitorNotFoundException("No such visitor entered.");
         }
-        if (Objects.equals(visitor1.get().getOutTime(), "")){
-            visitor1.get().setOutTime(visitor.getOutTime());
-            visitor1.get().setVisitDuration(Duration.between(visitor.getInTime(), visitor.getOutTime()));
+        if (Objects.isNull(visitor1.get().getOutTime())){
+            visitor1.get().setOutTime(LocalTime.now());
+            visitor1.get().setVisitDuration(calculateDurationOfVisit(visitor1.get().getInTime(), LocalTime.now()));
         } else {
             logger.error("OutTime is not null.");
             throw new VisitorAlreadyExitException("This visitor has already exited.");
@@ -50,20 +52,30 @@ public class VisitorServiceImpl implements VisitorService {
         return visitorRepository.save(visitor1.get());
     }
 
+    private LocalTime calculateDurationOfVisit(LocalTime inTime, LocalTime outTime) {
+
+        int hours = (int) ChronoUnit.HOURS.between(inTime, outTime);
+        int minutes = (int) (ChronoUnit.MINUTES.between(inTime, outTime) % 60);
+        int seconds = (int) (ChronoUnit.SECONDS.between(inTime, outTime) % 60);
+
+        return LocalTime.of(hours, minutes, seconds);
+
+    }
+
     @Override
-    public Visitor addVisitor(Visitor visitor, String guardName) {
+    public Visitor addVisitor(Visitor visitor) {
         SocietyUser societyUser = societyUserRepository.findByFlatNo(visitor.getSocietyUser().getFlatNo());
         Visitor visitor1 = Visitor.builder()
                 .age(visitor.getAge())
                 .contactNo(visitor.getContactNo())
                 .gender(visitor.getGender())
                 .date(visitor.getDate())
-                .inTime(visitor.getInTime())
+                .inTime(LocalTime.now())
                 .outTime(null)
                 .purpose(visitor.getPurpose())
                 .visitorName(visitor.getVisitorName())
                 .societyUser(societyUser)
-                .guardName(guardName)
+                .guardName(visitor.getGuardName())
                 .build();
         Visitor savedVisitor = visitorRepository.save(visitor1);
 
@@ -79,7 +91,7 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public List<Visitor> getAllVisitorsByDate(Date date) {
+    public List<Visitor> getAllVisitorsByDate(LocalDate date) {
         return visitorRepository.findAllByDate(date);
     }
 
