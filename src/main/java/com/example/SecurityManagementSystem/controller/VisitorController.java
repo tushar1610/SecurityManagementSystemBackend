@@ -18,7 +18,7 @@ public class VisitorController {
     private VisitorService visitorService;
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
     @GetMapping("/getAllVisitors")
     public List<Visitor> getAllVisitors() {
         return visitorService.getAllVisitors();

@@ -77,4 +77,22 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     }
 
+    @ExceptionHandler(NoSuchUserException.class)
+    public ResponseEntity<ErrorMessage> noSuchUserException(NoSuchUserException exception, WebRequest webRequest){
+
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorMessage);
+
+    }
+
+    @ExceptionHandler(UserNotAuthorizedException.class)
+    public ResponseEntity<ErrorMessage> userNotAuthorizedException(UserNotAuthorizedException exception, WebRequest webRequest){
+
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(errorMessage);
+
+    }
+
 }

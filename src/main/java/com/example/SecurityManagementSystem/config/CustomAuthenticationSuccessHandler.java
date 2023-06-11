@@ -15,11 +15,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))){
-            response.sendRedirect("/getAllSocietyUsers");
+            response.sendRedirect("http://localhost:3000/userPage");
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_SOCIETY_USER"))) {
-            response.sendRedirect("/getSocietyUserById/*");
+            response.sendRedirect("http://localhost:3000/userPage");
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_GUARD_USER"))) {
-            response.sendRedirect("/getGuardUserById/*");
+            response.sendRedirect("http://localhost:3000/guardPage");
         }
     }
 }

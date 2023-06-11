@@ -1,5 +1,6 @@
 package com.example.SecurityManagementSystem.config;
 
+import com.example.SecurityManagementSystem.entity.SocietyUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +10,14 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfiguration {
 
     @Autowired
@@ -45,18 +48,21 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity.cors().and().csrf().disable()
                 .authorizeHttpRequests()
+                .requestMatchers("/loginUser")
+                .permitAll()
                 .requestMatchers("/addSocietyUser")
                 .permitAll()
                 .requestMatchers("/addGuardUser")
                 .permitAll()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
-                ;//.loginPage("");
-                //.successHandler(authenticationSuccessHandler);
+                .authenticated();
+                // .loginPage("http://localhost:3000/login")
+                //.loginProcessingUrl("/loginUser");
+                //.successHandler(authenticationSuccessHandler)
+                // .failureUrl("/login?error");
+                //.defaultSuccessUrl("/index", true);
 
         return httpSecurity.build();
     }
