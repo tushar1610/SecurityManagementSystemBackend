@@ -4,6 +4,7 @@ import com.example.SecurityManagementSystem.entity.Login;
 import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.exception.SocietyUserNotCreatedException;
 import com.example.SecurityManagementSystem.exception.SocietyUserNotFoundException;
+import com.example.SecurityManagementSystem.exception.UserNotAuthorizedException;
 import com.example.SecurityManagementSystem.service.SocietyUserService;
 import jakarta.validation.Valid;
 
@@ -24,7 +25,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/society/user")
+@RequestMapping("society/user")
 public class SocietyUserController {
 
     @Autowired
@@ -33,54 +34,69 @@ public class SocietyUserController {
     public static final Logger logger = LoggerFactory.getLogger(SocietyUserController.class);
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @GetMapping("/getSocietyUserById/{userId}")
-    public SocietyUser getSocietyUserById(@PathVariable Long userId) throws SocietyUserNotFoundException {
-        return societyUserService.getSocietyUserById(userId);
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @GetMapping("/get/{userId}")
+    public SocietyUser getSocietyUserByUserId(@PathVariable Long userId) throws SocietyUserNotFoundException, UserNotAuthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
+        }
+        return societyUserService.getSocietyUserByUserId(userId);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @GetMapping("/index")
-    public String index() {
-        return "index";
-    }
+//    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
+//    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
+//    @GetMapping("/index")
+//    public String index() {
+//        return "index";
+//    }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/getAllSocietyUsers")
-    public List<SocietyUser> getAllSocietyUsers(){
-        return societyUserService.getAllSocietyUsers();
+    @GetMapping("/get/all")
+    public ResponseEntity<List<SocietyUser>> getAllSocietyUsers() throws UserNotAuthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
+        }
+        List<SocietyUser> societyUsers = societyUserService.getAllSocietyUsers();
+        return ResponseEntity.ok(societyUsers);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
-    @PostMapping("/addSocietyUser")
-    public SocietyUser addSocietyUser(@RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotCreatedException {
+    @PostMapping("/add")
+    public ResponseEntity<SocietyUser> addSocietyUser(@RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotCreatedException {
         SocietyUser societyUser1 = societyUserService.addSocietyUser(societyUser);
         if (societyUser1 == null) {
             throw new SocietyUserNotCreatedException("Society member cannot be created. Try again later.");
         }
-        return societyUser1;
+        return ResponseEntity.ok(societyUser1);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.PUT)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @PutMapping("/updateSocietyUserByUserId/{userId}")
-    public SocietyUser updateSocietyUserByUserId(@PathVariable Long userId, @RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotFoundException {
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<SocietyUser> updateSocietyUserByUserId(@PathVariable Long userId, @RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotFoundException, UserNotAuthorizedException {
 
-        return societyUserService.updateSocietyUserByUserId(userId, societyUser);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
+        }
+
+        SocietyUser societyUser1 = societyUserService.updateSocietyUserByUserId(userId, societyUser);
+        return ResponseEntity.ok(societyUser1);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.DELETE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/deleteSocietyUser/{userId}")
-    public String deleteSocietyUser(@PathVariable Long userId){
-        try{
-            societyUserService.deleteSocietyUser(userId);
-        } catch (Exception e){
-            return "Error in deleting the user";
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteSocietyUser(@PathVariable Long userId) throws UserNotAuthorizedException, SocietyUserNotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
         }
-        return "Deletion successful";
+        societyUserService.deleteSocietyUser(userId);
+        return ResponseEntity.ok("Deletion successful");
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface SocietyUserService {
-    SocietyUser getSocietyUserById(Long sUserId) throws SocietyUserNotFoundException;
+    SocietyUser getSocietyUserByUserId(Long userId) throws SocietyUserNotFoundException;
 
     SocietyUser addSocietyUser(SocietyUser societyUser);
 

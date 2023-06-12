@@ -59,6 +59,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     }
 
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ResponseEntity<ErrorMessage> notificationNotFoundException(NotificationNotFoundException exception, WebRequest webRequest){
+
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(errorMessage);
+
+    }
+
     @ExceptionHandler(VisitorNotCreatedException.class)
     public ResponseEntity<ErrorMessage> visitorNotCreatedException(VisitorNotCreatedException exception, WebRequest webRequest){
 

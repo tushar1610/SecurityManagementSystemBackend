@@ -50,7 +50,7 @@ class SocietyUserServiceTest {
 
         Mockito.when(societyUserRepository.findById(1L)).thenReturn(Optional.of(societyUser));
 
-        SocietyUser result = societyUserService.getSocietyUserById(1L);
+        SocietyUser result = societyUserService.getSocietyUserByUserId(1L);
 
         assertEquals(societyUser, result);
     }

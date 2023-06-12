@@ -1,80 +1,121 @@
 package com.example.SecurityManagementSystem.controller;
 
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.UserNotAuthorizedException;
 import com.example.SecurityManagementSystem.exception.VisitorNotCreatedException;
 import com.example.SecurityManagementSystem.service.VisitorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/visitor")
 public class VisitorController {
 
     @Autowired
     private VisitorService visitorService;
 
+    private boolean verifyAuthentication() throws UserNotAuthorizedException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
+        }
+        return true;
+    }
+
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @GetMapping("/getAllVisitors")
-    public List<Visitor> getAllVisitors() {
-        return visitorService.getAllVisitors();
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/get/all")
+    public ResponseEntity<List<Visitor>> getAllVisitors() throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitors();
+        }
+        return ResponseEntity.ok(visitors);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/getAllVisitorsByAge/{age}")
-    public List<Visitor> getAllVisitorsByAge(@PathVariable Integer age){
-        return visitorService.getAllVisitorsByAge(age);
+    @GetMapping("/get/all/age/{age}")
+    public ResponseEntity<List<Visitor>> getAllVisitorsByAge(@PathVariable Integer age) throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitorsByAge(age);
+        }
+        return ResponseEntity.ok(visitors);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/getAllVisitorsByGender/{gender}")
-    public List<Visitor> getAllVisitorsByGender(@PathVariable String gender){
-        return visitorService.getAllVisitorsByGender(gender);
+    @GetMapping("/get/all/gender/{gender}")
+    public ResponseEntity<List<Visitor>> getAllVisitorsByGender(@PathVariable String gender) throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitorsByGender(gender);
+        }
+        return ResponseEntity.ok(visitors);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @GetMapping("/getAllVisitorsByFlatNo/{flatNo}")
-    public List<Visitor> getAllVisitorsByFlatNo(@PathVariable String flatNo){
-        return visitorService.getAllVisitorsByFlatNo(flatNo);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/get/all/flatNo/{flatNo}")
+    public ResponseEntity<List<Visitor>> getAllVisitorsByFlatNo(@PathVariable String flatNo) throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitorsByFlatNo(flatNo);
+        }
+        return ResponseEntity.ok(visitors);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/getAllVisitorsByDate")
-    public List<Visitor> getAllVisitorsByDate(@RequestParam("date") LocalDate date){
-        return visitorService.getAllVisitorsByDate(date);
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/get/all/date")
+    public ResponseEntity<List<Visitor>> getAllVisitorsByDate(@RequestParam("date") LocalDate date) throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitorsByDate(date);
+        }
+        return ResponseEntity.ok(visitors);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
-    @PostMapping("/addVisitor")
-    public Visitor addVisitor(@RequestBody @Valid Visitor visitor) throws VisitorNotCreatedException {
+    @PostMapping("/add")
+    public ResponseEntity<Visitor> addVisitor(@RequestBody @Valid Visitor visitor) throws VisitorNotCreatedException {
         Visitor visitor1 = visitorService.addVisitor(visitor);
         if (visitor1 == null) {
             throw new VisitorNotCreatedException("Visitor cannot be created. Try again later.");
         }
-        return visitor1;
+        return ResponseEntity.ok(visitor1);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.PUT)
     @PreAuthorize("hasRole('ROLE_GUARD_USER')")
     @PutMapping("/updateVisitorOutTime")
-    public Visitor updateVisitorOutTime(@RequestBody Visitor visitor) throws Exception {
-        return visitorService.updateVisitorOutTime(visitor);
-
+    public ResponseEntity<Visitor> updateVisitorOutTime(@RequestBody Visitor visitor) throws Exception {
+        Visitor visitor1 = new Visitor();
+        if (verifyAuthentication()) {
+            visitor1 = visitorService.updateVisitorOutTime(visitor);
+        }
+        return ResponseEntity.ok(visitor1);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.PUT)
-    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
-    @PutMapping("/updateApprovalStatus/{visitorId}")
-    public boolean updateVisitorApprovalStatus(@PathVariable Long visitorId, @RequestBody Visitor visitor){
-        return visitorService.updateVisitorApprovalStatus(visitorId, visitor);
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @PutMapping("/update/approval/status/{visitorId}")
+    public ResponseEntity<Boolean> updateVisitorApprovalStatus(@PathVariable Long visitorId, @RequestBody Visitor visitor) throws UserNotAuthorizedException {
+        Boolean isApproved = false;
+        if (verifyAuthentication()) {
+            isApproved = visitorService.updateVisitorApprovalStatus(visitorId, visitor);
+        }
+        return ResponseEntity.ok(isApproved);
     }
 
 }

@@ -30,7 +30,7 @@ public class SocietyUserServiceImpl implements SocietyUserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public SocietyUser getSocietyUserById(Long userId) throws SocietyUserNotFoundException {
+    public SocietyUser getSocietyUserByUserId(Long userId) throws SocietyUserNotFoundException {
         Optional<SocietyUser> societyUser = societyUserRepository.findByUserUserId(userId);
         if (!societyUser.isPresent()) {
             logger.error("No such society member.");

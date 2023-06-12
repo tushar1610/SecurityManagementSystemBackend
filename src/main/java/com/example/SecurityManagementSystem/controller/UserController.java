@@ -27,7 +27,7 @@ import com.example.SecurityManagementSystem.exception.UserNotAuthorizedException
 import com.example.SecurityManagementSystem.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("user")
 public class UserController {
 
     @Autowired

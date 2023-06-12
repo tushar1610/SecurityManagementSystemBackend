@@ -50,11 +50,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/loginUser")
+                .requestMatchers("/user/login")
                 .permitAll()
-                .requestMatchers("/addSocietyUser")
+                .requestMatchers("/society/user/add")
                 .permitAll()
-                .requestMatchers("/addGuardUser")
+                .requestMatchers("/guard/user/add")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
