@@ -24,8 +24,6 @@ public class SecurityConfiguration {
     @Autowired
     private CustomAuthenticationSuccessHandler authenticationSuccessHandler;
 
-    @Autowired
-    private CustomSecurityFilter customSecurityFilter;
 
     @Bean
     public UserDetailsService getUserDetailsService(){
@@ -53,7 +51,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
-                .addFilterBefore(customSecurityFilter, AbstractPreAuthenticatedProcessingFilter.class)
+                //.addFilterBefore(customSecurityFilter, AbstractPreAuthenticatedProcessingFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login")
                 .permitAll()

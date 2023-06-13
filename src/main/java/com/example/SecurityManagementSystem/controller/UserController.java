@@ -21,6 +21,9 @@ import com.example.SecurityManagementSystem.exception.NoSuchUserException;
 import com.example.SecurityManagementSystem.exception.UserNotAuthorizedException;
 import com.example.SecurityManagementSystem.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -33,13 +36,17 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
     @PostMapping("/login")
-    public ResponseEntity<Object> loginUser(@RequestBody Login login) throws UsernameNotFoundException{
+    public ResponseEntity<Object> loginUser(HttpServletRequest request, @RequestBody Login login) throws UsernameNotFoundException{
         Authentication authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(
             login.getUsername(), login.getPassword()
         ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        HttpSession session = request.getSession(true);
+        
+        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+        String sessionId = session.getId();
         //To check the role of the user logged in
 //        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 //        String role = "";
@@ -48,12 +55,13 @@ public class UserController {
 //            role = authorityName;
 //        }
 //        System.out.println(role);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new ResponseEntity<Object>(principal, HttpStatus.OK);
+        //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new ResponseEntity<Object>(sessionId, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @GetMapping("/get/details/{email}")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/get/details")
     public ResponseEntity<User> getDetails(@RequestParam("email") String email, @RequestParam("role") String role, @RequestParam("password") String password) throws NoSuchUserException, UserNotAuthorizedException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
