@@ -1,5 +1,6 @@
 package com.example.SecurityManagementSystem.controller;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.SecurityManagementSystem.entity.Login;
 import com.example.SecurityManagementSystem.entity.User;
@@ -45,14 +40,21 @@ public class UserController {
         ));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        //To check the role of the user logged in
+//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        String role = "";
+//        for(GrantedAuthority authority : authorities){
+//            String authorityName = authority.getAuthority();
+//            role = authorityName;
+//        }
+//        System.out.println(role);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return new ResponseEntity<Object>(principal, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/get/details")
-    public ResponseEntity<User> getDetails(@RequestParam("email") String email, @RequestParam("role") String role) throws NoSuchUserException, UserNotAuthorizedException{
+    @GetMapping("/get/details/{email}")
+    public ResponseEntity<User> getDetails(@RequestParam("email") String email, @RequestParam("role") String role, @RequestParam("password") String password) throws NoSuchUserException, UserNotAuthorizedException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");

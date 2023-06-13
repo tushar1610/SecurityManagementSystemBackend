@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -22,6 +23,9 @@ public class SecurityConfiguration {
 
     @Autowired
     private CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private CustomSecurityFilter customSecurityFilter;
 
     @Bean
     public UserDetailsService getUserDetailsService(){
@@ -49,6 +53,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().csrf().disable()
+                .addFilterBefore(customSecurityFilter, AbstractPreAuthenticatedProcessingFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login")
                 .permitAll()
