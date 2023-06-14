@@ -44,9 +44,7 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         HttpSession session = request.getSession(true);
-        
         session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-        String sessionId = session.getId();
         //To check the role of the user logged in
 //        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 //        String role = "";
@@ -55,14 +53,14 @@ public class UserController {
 //            role = authorityName;
 //        }
 //        System.out.println(role);
-        //Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new ResponseEntity<Object>(sessionId, HttpStatus.OK);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new ResponseEntity<Object>(principal, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/get/details")
-    public ResponseEntity<User> getDetails(@RequestParam("email") String email, @RequestParam("role") String role, @RequestParam("password") String password) throws NoSuchUserException, UserNotAuthorizedException{
+    @GetMapping("/get/details/{email}")
+    public ResponseEntity<User> getDetails(@PathVariable("email") String email) throws NoSuchUserException, UserNotAuthorizedException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");

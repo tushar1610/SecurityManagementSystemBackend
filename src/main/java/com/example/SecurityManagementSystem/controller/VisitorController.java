@@ -75,7 +75,7 @@ public class VisitorController {
         return ResponseEntity.ok(visitors);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
+    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET, allowCredentials = "false")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/get/all/date")
     public ResponseEntity<List<Visitor>> getAllVisitorsByDate(@RequestParam("date") LocalDate date) throws UserNotAuthorizedException {
@@ -87,6 +87,7 @@ public class VisitorController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public ResponseEntity<Visitor> addVisitor(@RequestBody @Valid Visitor visitor) throws VisitorNotCreatedException {
         Visitor visitor1 = visitorService.addVisitor(visitor);
