@@ -60,7 +60,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/guard/user/add")
                 .permitAll()
                 .anyRequest()
-                .authenticated();
+                .permitAll();
+//                .authenticated();
                 // .loginPage("http://localhost:3000/login")
                 //.loginProcessingUrl("/loginUser");
                 //.successHandler(authenticationSuccessHandler)

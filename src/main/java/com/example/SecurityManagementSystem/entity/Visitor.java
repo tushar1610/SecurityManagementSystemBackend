@@ -35,7 +35,6 @@ public class Visitor {
     private String gender;
     @NotNull
     private String purpose;
-    @NotNull
     private LocalDate date;
     private LocalTime inTime;
     private LocalTime outTime;

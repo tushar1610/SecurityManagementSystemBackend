@@ -69,7 +69,7 @@ public class VisitorServiceImpl implements VisitorService {
                 .age(visitor.getAge())
                 .contactNo(visitor.getContactNo())
                 .gender(visitor.getGender())
-                .date(visitor.getDate())
+                .date(LocalDate.now())
                 .inTime(LocalTime.now())
                 .outTime(null)
                 .purpose(visitor.getPurpose())

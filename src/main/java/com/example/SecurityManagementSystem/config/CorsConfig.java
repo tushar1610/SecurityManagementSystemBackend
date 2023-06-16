@@ -20,7 +20,7 @@ public class CorsConfig {
 //        configuration.addAllowedHeader("*");
 //        configuration.setAllowedHeaders(Arrays.asList("*"));
 //        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
-//        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
+//        configuration.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "PUT", "DELETE"));
         source.registerCorsConfiguration("/**", configuration.applyPermitDefaultValues());
         return new CorsFilter(source);
     }

@@ -18,13 +18,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/guard/user")
+@CrossOrigin(maxAge = 3600)
 public class GuardUserController {
 
     @Autowired
     private GuardUserService guardUserService;
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+//    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @GetMapping("/get/all")
     public ResponseEntity<List<GuardUser>> getAllGuardUsers() throws UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,7 +37,7 @@ public class GuardUserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("hasRole('ROLE_GUARD_USER')")
+//    @PreAuthorize("hasRole('ROLE_GUARD_USER')")
     @GetMapping("/get/{userId}")
     public ResponseEntity<GuardUser> getGuardUserByUserId(@PathVariable Long userId) throws GuardUserNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,7 +59,7 @@ public class GuardUserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.PUT)
-    @PreAuthorize("hasRole('ROLE_GUARD_USER')")
+//    @PreAuthorize("hasRole('ROLE_GUARD_USER')")
     @PutMapping("/update/{userId}")
     public ResponseEntity<GuardUser> updateGuardUserByUserId(@PathVariable Long userId, @RequestBody GuardUser guardUser) throws GuardUserNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,7 +71,7 @@ public class GuardUserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.DELETE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteGuardUserByUserId(@PathVariable Long userId) throws GuardUserNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
