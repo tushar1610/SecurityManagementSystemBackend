@@ -69,6 +69,21 @@ public class SocietyUserServiceImpl implements SocietyUserService {
         if (!societyUser1.get().getFlatNo().equals(societyUser.getFlatNo())){
             societyUser1.get().setFlatNo(societyUser.getFlatNo());
         }
+        if (!societyUser1.get().getUser().getUserName().equals(societyUser.getUser().getUserName())){
+            societyUser1.get().setFlatNo(societyUser.getFlatNo());
+        }
+        if (!societyUser1.get().getUser().getUserName().equals(societyUser.getUser().getUserName())){
+            societyUser1.get().getUser().setUserName(societyUser.getUser().getUserName());
+        }
+        if (!societyUser1.get().getUser().getAge().equals(societyUser.getUser().getAge())){
+            societyUser1.get().getUser().setAge(societyUser.getUser().getAge());
+        }
+        if (!societyUser1.get().getUser().getContactNo().equals(societyUser.getUser().getContactNo())){
+            societyUser1.get().getUser().setContactNo(societyUser.getUser().getContactNo());
+        }
+        if (!societyUser1.get().getUser().getGender().equals(societyUser.getUser().getGender())){
+            societyUser1.get().getUser().setGender(societyUser.getUser().getGender());
+        }
         return societyUserRepository.save(societyUser1.get());
 
     }

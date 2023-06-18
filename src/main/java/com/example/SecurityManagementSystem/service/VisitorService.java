@@ -24,4 +24,6 @@ public interface VisitorService {
     List<Visitor> getAllVisitorsByFlatNo(String flatNo);
 
     boolean updateVisitorApprovalStatus(Long visitorId, Visitor visitor);
+
+    List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String flatNo);
 }

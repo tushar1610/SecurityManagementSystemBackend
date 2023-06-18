@@ -45,7 +45,7 @@ public class Visitor {
     private String approverName;
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = SocietyUser.class)
     @JoinColumn(
-            name = "SocietyUserFlatNo",
+            name = "flatNo",
             referencedColumnName = "flatNo"
     )
     private SocietyUser societyUser;

@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/notification")
@@ -31,28 +32,28 @@ public class NotificationController {
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
 //    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
     @GetMapping("/get/all")
-    public ResponseEntity<List<Notification>> getAllNotifications() throws UserNotAuthorizedException {
+    public ResponseEntity<List<Notification>> getAllNotifications(@RequestParam("flatNo") String flatNo) throws UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
         }
-        List<Notification> notifications = notificationService.getAllNotifications();
+        List<Notification> notifications = notificationService.getAllNotifications(flatNo);
         return ResponseEntity.ok(notifications);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
 //    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @GetMapping("/get/{notificationId}")
-    public ResponseEntity<Notification> getNotificationById(@PathVariable Long notificationId) throws NotificationNotFoundException, UserNotAuthorizedException {
+    public ResponseEntity<Notification> getNotificationById(@PathVariable Long notificationId, @RequestParam("flatNo") String flatNo) throws NotificationNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
         }
-        Notification notification = notificationService.getNotificationById(notificationId);
-        if (notification == null){
+        Optional<Notification> notification = notificationService.getNotificationById(notificationId, flatNo);
+        if (!notification.isPresent()){
             throw new NotificationNotFoundException("No such notification");
         }
-        return ResponseEntity.ok(notification);
+        return ResponseEntity.ok(notification.get());
     }
 
 }

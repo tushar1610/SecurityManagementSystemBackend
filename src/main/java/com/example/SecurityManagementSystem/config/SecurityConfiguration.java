@@ -61,12 +61,15 @@ public class SecurityConfiguration {
                 .permitAll()
                 .anyRequest()
                 .permitAll();
-//                .authenticated();
+                //.authenticated();
+                // .and()
+                // .formLogin()
                 // .loginPage("http://localhost:3000/login")
+                // .defaultSuccessUrl("http://localhost:3000/userPage");
                 //.loginProcessingUrl("/loginUser");
                 //.successHandler(authenticationSuccessHandler)
                 // .failureUrl("/login?error");
-                //.defaultSuccessUrl("/index", true);
+                
 
         return httpSecurity.build();
     }

@@ -17,8 +17,11 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     List<Visitor> findAllByDate(LocalDate date);
 
     List<Visitor> findAllByAge(Integer age);
+
     List<Visitor> findAllByGender(String gender);
 
     Optional<Visitor> findByVisitorName(String visitorName);
+
+    List<Visitor> findAllByDateAndSocietyUserFlatNo(LocalDate date, String flatNo);
 
 }

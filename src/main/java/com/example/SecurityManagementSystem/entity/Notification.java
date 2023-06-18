@@ -22,4 +22,6 @@ public class Notification {
     @NotNull
     private String message;
     private LocalDateTime timestamp;
+    @NotNull
+    private String flatNo;
 }

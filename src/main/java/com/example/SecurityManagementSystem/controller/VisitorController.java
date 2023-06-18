@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/visitor")
-@CrossOrigin(maxAge = 3600)
 public class VisitorController {
 
     @Autowired
@@ -29,6 +28,7 @@ public class VisitorController {
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
         }
+        System.out.println(authentication);
         return true;
     }
 
@@ -40,6 +40,7 @@ public class VisitorController {
         if (verifyAuthentication()) {
             visitors = visitorService.getAllVisitors();
         }
+        System.out.println(visitors);
         return ResponseEntity.ok(visitors);
     }
 
@@ -76,13 +77,24 @@ public class VisitorController {
         return ResponseEntity.ok(visitors);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET, allowCredentials = "false")
+    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
 //    @PreAuthorize("isAuthenticated()")
     @GetMapping("/get/all/date")
     public ResponseEntity<List<Visitor>> getAllVisitorsByDate(@RequestParam("date") LocalDate date) throws UserNotAuthorizedException {
         List<Visitor> visitors = new ArrayList<>();
         if (verifyAuthentication()) {
             visitors = visitorService.getAllVisitorsByDate(date);
+        }
+        return ResponseEntity.ok(visitors);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
+//    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/get/all/date/and/flatNo")
+    public ResponseEntity<List<Visitor>> getAllVisitorsByDateAndFlatNo(@RequestParam("date") LocalDate date, @RequestParam("flatNo") String flatNo) throws UserNotAuthorizedException {
+        List<Visitor> visitors = new ArrayList<>();
+        if (verifyAuthentication()) {
+            visitors = visitorService.getAllVisitorsByDateAndFlatNo(date, flatNo);
         }
         return ResponseEntity.ok(visitors);
     }

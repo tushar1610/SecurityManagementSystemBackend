@@ -26,7 +26,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("society/user")
-@CrossOrigin(maxAge = 3600)
 public class SocietyUserController {
 
     @Autowired
@@ -35,7 +34,7 @@ public class SocietyUserController {
     public static final Logger logger = LoggerFactory.getLogger(SocietyUserController.class);
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    //@PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @GetMapping("/get/{userId}")
     public SocietyUser getSocietyUserByUserId(@PathVariable Long userId) throws SocietyUserNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

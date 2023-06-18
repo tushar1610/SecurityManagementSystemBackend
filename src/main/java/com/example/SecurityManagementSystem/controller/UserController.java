@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("user")
-@CrossOrigin(maxAge = 3600)
 public class UserController {
 
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();

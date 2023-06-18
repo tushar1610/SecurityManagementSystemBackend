@@ -84,6 +84,7 @@ public class VisitorServiceImpl implements VisitorService {
         Notification notification = Notification.builder()
                 .message(message)
                 .timestamp(LocalDateTime.now())
+                .flatNo(visitor.getSocietyUser().getFlatNo())
                 .build();
         notificationRepository.save(notification);
 
@@ -125,5 +126,10 @@ public class VisitorServiceImpl implements VisitorService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String flatNo) {
+        return visitorRepository.findAllByDateAndSocietyUserFlatNo(date, flatNo);
     }
 }

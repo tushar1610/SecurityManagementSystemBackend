@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationImpl implements NotificationService {
@@ -20,12 +21,12 @@ public class NotificationImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> getAllNotifications() {
-        return notificationRepository.findAll();
+    public List<Notification> getAllNotifications(String email) {
+        return notificationRepository.findAllByFlatNo(email);
     }
 
     @Override
-    public Notification getNotificationById(Long notificationId) {
-        return notificationRepository.findById(notificationId).get();
+    public Optional<Notification> getNotificationById(Long notificationId, String flatNo) {
+        return notificationRepository.findByNotificationIdAndFlatNo(notificationId, flatNo);
     }
 }
