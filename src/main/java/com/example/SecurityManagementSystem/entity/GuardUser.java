@@ -30,7 +30,7 @@ public class GuardUser {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(
-            name = "UserId",
+            name = "userId",
             referencedColumnName = "userId"
     )
     private User user;

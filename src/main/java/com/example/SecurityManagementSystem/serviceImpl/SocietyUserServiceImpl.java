@@ -70,9 +70,6 @@ public class SocietyUserServiceImpl implements SocietyUserService {
             societyUser1.get().setFlatNo(societyUser.getFlatNo());
         }
         if (!societyUser1.get().getUser().getUserName().equals(societyUser.getUser().getUserName())){
-            societyUser1.get().setFlatNo(societyUser.getFlatNo());
-        }
-        if (!societyUser1.get().getUser().getUserName().equals(societyUser.getUser().getUserName())){
             societyUser1.get().getUser().setUserName(societyUser.getUser().getUserName());
         }
         if (!societyUser1.get().getUser().getAge().equals(societyUser.getUser().getAge())){

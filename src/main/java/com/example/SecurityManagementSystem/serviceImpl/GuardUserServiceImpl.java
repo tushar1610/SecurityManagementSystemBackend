@@ -63,6 +63,18 @@ public class GuardUserServiceImpl implements GuardUserService {
         if (!guardUser1.get().getAddress().equals(guardUser.getAddress())){
             guardUser1.get().setAddress(guardUser.getAddress());
         }
+        if (!guardUser1.get().getUser().getUserName().equals(guardUser.getUser().getUserName())){
+            guardUser1.get().getUser().setUserName(guardUser.getUser().getUserName());
+        }
+        if (!guardUser1.get().getUser().getAge().equals(guardUser.getUser().getAge())){
+            guardUser1.get().getUser().setAge(guardUser.getUser().getAge());
+        }
+        if (!guardUser1.get().getUser().getContactNo().equals(guardUser.getUser().getContactNo())){
+            guardUser1.get().getUser().setContactNo(guardUser.getUser().getContactNo());
+        }
+        if (!guardUser1.get().getUser().getGender().equals(guardUser.getUser().getGender())){
+            guardUser1.get().getUser().setGender(guardUser.getUser().getGender());
+        }
         return guardUserRepository.save(guardUser1.get());
     }
 
