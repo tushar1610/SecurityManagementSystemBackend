@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Data
 @Builder
@@ -24,6 +27,7 @@ public class User {
     private Long userId;
     @NotNull
     @Size(max = 100, min = 3, message = "Length must be greater than 3 and less than 100")
+    @Column(unique = true)
     private String userName;
     private Integer age;
     private String contactNo;
@@ -33,5 +37,4 @@ public class User {
     private String password;
     private String gender;
     private String role;
-
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface NotificationService {
     Notification addNotification(Notification notification);
 
-    List<Notification> getAllNotifications(String flatNo);
+    List<Notification> getAllNotifications();
 
     Optional<Notification> getNotificationById(Long notificationId, String flatNo);
 }

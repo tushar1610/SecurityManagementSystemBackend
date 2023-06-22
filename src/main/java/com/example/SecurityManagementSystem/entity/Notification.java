@@ -24,4 +24,7 @@ public class Notification {
     private LocalDateTime timestamp;
     @NotNull
     private String flatNo;
+    @OneToOne
+    @JoinColumn(name = "visitorId" , referencedColumnName = "visitorId")
+    private Visitor visitor;
 }

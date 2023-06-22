@@ -3,6 +3,7 @@ package com.example.SecurityManagementSystem.serviceImpl;
 import com.example.SecurityManagementSystem.entity.Notification;
 import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.SocietyUserNotFoundException;
 import com.example.SecurityManagementSystem.exception.VisitorAlreadyExitException;
 import com.example.SecurityManagementSystem.exception.VisitorNotFoundException;
 import com.example.SecurityManagementSystem.repository.NotificationRepository;
@@ -85,6 +86,7 @@ public class VisitorServiceImpl implements VisitorService {
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .flatNo(visitor.getSocietyUser().getFlatNo())
+                .visitor(savedVisitor)
                 .build();
         notificationRepository.save(notification);
 
@@ -112,8 +114,12 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public List<Visitor> getAllVisitorsByFlatNo(String flatNo) {
-        return visitorRepository.findAllBySocietyUserFlatNo(flatNo);
+    public List<Visitor> getAllVisitorsByFlatNo(String email) throws SocietyUserNotFoundException {
+        SocietyUser societyUser = societyUserRepository.findByUserEmail(email);
+        if (societyUser == null) {
+            throw new SocietyUserNotFoundException("No such society user by this credentials");
+        }
+        return visitorRepository.findAllBySocietyUserFlatNo(societyUser.getFlatNo());
     }
 
     @Override
@@ -129,7 +135,11 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String flatNo) {
-        return visitorRepository.findAllByDateAndSocietyUserFlatNo(date, flatNo);
+    public List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String email) throws SocietyUserNotFoundException {
+        SocietyUser societyUser = societyUserRepository.findByUserEmail(email);
+        if (societyUser == null) {
+            throw new SocietyUserNotFoundException("No society user with such credentials");
+        }
+        return visitorRepository.findAllByDateAndSocietyUserFlatNo(date, societyUser.getFlatNo());
     }
 }

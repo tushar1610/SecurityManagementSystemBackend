@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 @Configuration
@@ -22,8 +23,9 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 public class SecurityConfiguration {
 
     @Autowired
-    private CustomAuthenticationSuccessHandler authenticationSuccessHandler;
-
+    private JWTAuthenticationEntryPoint point;
+    @Autowired
+    private JWTAuthenticationFilter filter;
 
     @Bean
     public UserDetailsService getUserDetailsService(){
@@ -50,8 +52,9 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.cors().and().csrf().disable()
-                //.addFilterBefore(customSecurityFilter, AbstractPreAuthenticatedProcessingFilter.class)
+
+        httpSecurity.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login")
                 .permitAll()
@@ -60,7 +63,27 @@ public class SecurityConfiguration {
                 .requestMatchers("/guard/user/add")
                 .permitAll()
                 .anyRequest()
-                .permitAll();
+                .authenticated()
+                .and()
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(point))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        httpSecurity.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
+
+
+//        httpSecurity.cors().and().csrf().disable()
+//                //.addFilterBefore(customSecurityFilter, AbstractPreAuthenticatedProcessingFilter.class)
+//                .authorizeHttpRequests()
+//                .requestMatchers("/user/login")
+//                .permitAll()
+//                .requestMatchers("/society/user/add")
+//                .permitAll()
+//                .requestMatchers("/guard/user/add")
+//                .permitAll()
+//                .anyRequest()
+//                .permitAll();
                 //.authenticated();
                 // .and()
                 // .formLogin()
@@ -71,7 +94,7 @@ public class SecurityConfiguration {
                 // .failureUrl("/login?error");
                 
 
-        return httpSecurity.build();
+        //return httpSecurity.build();
     }
 
 }

@@ -23,26 +23,26 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public Notification addNotification(@RequestBody @Valid Notification notification){
         return notificationService.addNotification(notification);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-//    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
+    @PreAuthorize("hasRole('ROLE_SOCIETY_USER')")
     @GetMapping("/get/all")
-    public ResponseEntity<List<Notification>> getAllNotifications(@RequestParam("flatNo") String flatNo) throws UserNotAuthorizedException {
+    public ResponseEntity<List<Notification>> getAllNotifications() throws UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null){
             throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
         }
-        List<Notification> notifications = notificationService.getAllNotifications(flatNo);
+        List<Notification> notifications = notificationService.getAllNotifications();
         return ResponseEntity.ok(notifications);
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-//    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @GetMapping("/get/{notificationId}")
     public ResponseEntity<Notification> getNotificationById(@PathVariable Long notificationId, @RequestParam("flatNo") String flatNo) throws NotificationNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

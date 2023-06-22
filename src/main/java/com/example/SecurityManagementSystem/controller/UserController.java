@@ -1,9 +1,16 @@
 package com.example.SecurityManagementSystem.controller;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.example.SecurityManagementSystem.config.CustomUserDetails;
+import com.example.SecurityManagementSystem.config.JWTHelper;
+import com.example.SecurityManagementSystem.payload.JWTRequest;
+import com.example.SecurityManagementSystem.payload.JWTResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,35 +37,68 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 public class UserController {
 
-    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-
-    private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-    @Autowired
+   @Autowired
     private UserService userService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
+    @Autowired
+    private JWTHelper jwtHelper;
+
+//    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.POST)
     @PostMapping("/login")
-    public ResponseEntity<Object> loginUser(HttpServletRequest request, HttpServletResponse response, @RequestBody Login login) throws UsernameNotFoundException{
+    public ResponseEntity<Object> loginUser(HttpServletRequest request, HttpServletResponse response, @RequestBody @Valid JWTRequest jwtRequest) throws UsernameNotFoundException{
 
-        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
-                login.getUsername(), login.getPassword()
-        );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(token);
-        SecurityContext context = securityContextHolderStrategy.createEmptyContext();
-        context.setAuthentication(authentication);
-        securityContextHolderStrategy.setContext(context);
-        securityContextRepository.saveContext(context, request, response);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String token = jwtHelper.generateToken(userDetails);
 
-        return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
 
-        //        Authentication authentication = authenticationManager
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        JWTResponse jwtResponse = JWTResponse.builder()
+                .jwtToken(token)
+                .username(userDetails.getUsername())
+                .role(roles.get(0)).build();
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+
+    }
+
+    @CrossOrigin
+    @PreAuthorize("hasRole('GUARD_USER') or hasRole('SOCIETY_USER') or hasRole('ADMIN')")
+    @GetMapping("/get/details/{email}")
+    public ResponseEntity<User> getDetails(@PathVariable("email") String email) throws NoSuchUserException, UserNotAuthorizedException{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null){
+            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
+        }
+        User user = userService.getDetails(email);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+}
+
+//        UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
+//                login.getUsername(), login.getPassword()
+//        );
+//
+//        Authentication authentication = authenticationManager.authenticate(token);
+//        SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+//        context.setAuthentication(authentication);
+//        securityContextHolderStrategy.setContext(context);
+//        securityContextRepository.saveContext(context, request, response);
+//
+//        return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
+
+//        Authentication authentication = authenticationManager
 //        .authenticate(new UsernamePasswordAuthenticationToken(
 //            login.getUsername(), login.getPassword()
 //        ));
@@ -76,17 +116,3 @@ public class UserController {
 ////        System.out.println(role);
 //        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        return new ResponseEntity<Object>(principal, HttpStatus.OK);
-    }
-
-    @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    //@PreAuthorize("isAuthenticated()")
-    @GetMapping("/get/details/{email}")
-    public ResponseEntity<User> getDetails(@PathVariable("email") String email) throws NoSuchUserException, UserNotAuthorizedException{
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null){
-            throw new UserNotAuthorizedException("Access denied. Unauthorized access.");
-        }
-        User user = userService.getDetails(email);
-        return new ResponseEntity<User>(user, HttpStatus.OK);
-    }
-}

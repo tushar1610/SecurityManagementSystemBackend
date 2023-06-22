@@ -1,6 +1,7 @@
 package com.example.SecurityManagementSystem.service;
 
 import com.example.SecurityManagementSystem.entity.Visitor;
+import com.example.SecurityManagementSystem.exception.SocietyUserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,9 +22,9 @@ public interface VisitorService {
 
     List<Visitor> getAllVisitors();
 
-    List<Visitor> getAllVisitorsByFlatNo(String flatNo);
+    List<Visitor> getAllVisitorsByFlatNo(String email) throws SocietyUserNotFoundException;
 
     boolean updateVisitorApprovalStatus(Long visitorId, Visitor visitor);
 
-    List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String flatNo);
+    List<Visitor> getAllVisitorsByDateAndFlatNo(LocalDate date, String email) throws SocietyUserNotFoundException;
 }

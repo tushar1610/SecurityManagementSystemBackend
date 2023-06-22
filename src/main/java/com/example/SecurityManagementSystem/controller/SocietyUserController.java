@@ -34,7 +34,7 @@ public class SocietyUserController {
     public static final Logger logger = LoggerFactory.getLogger(SocietyUserController.class);
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-    //@PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @GetMapping("/get/{userId}")
     public SocietyUser getSocietyUserByUserId(@PathVariable Long userId) throws SocietyUserNotFoundException, UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,7 +52,7 @@ public class SocietyUserController {
 //    }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.GET)
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/get/all")
     public ResponseEntity<List<SocietyUser>> getAllSocietyUsers() throws UserNotAuthorizedException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -74,7 +74,7 @@ public class SocietyUserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.PUT)
-//    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
+    @PreAuthorize("isAuthenticated() and !hasAuthority('ROLE_GUARD_USER')")
     @PutMapping("/update/{userId}")
     public ResponseEntity<SocietyUser> updateSocietyUserByUserId(@PathVariable Long userId, @RequestBody @Valid SocietyUser societyUser) throws SocietyUserNotFoundException, UserNotAuthorizedException {
 
@@ -88,7 +88,7 @@ public class SocietyUserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000",methods = RequestMethod.DELETE)
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteSocietyUser(@PathVariable Long userId) throws UserNotAuthorizedException, SocietyUserNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

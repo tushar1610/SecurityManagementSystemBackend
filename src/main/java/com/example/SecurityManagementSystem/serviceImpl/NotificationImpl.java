@@ -1,9 +1,12 @@
 package com.example.SecurityManagementSystem.serviceImpl;
 
 import com.example.SecurityManagementSystem.entity.Notification;
+import com.example.SecurityManagementSystem.entity.SocietyUser;
 import com.example.SecurityManagementSystem.repository.NotificationRepository;
+import com.example.SecurityManagementSystem.repository.SocietyUserRepository;
 import com.example.SecurityManagementSystem.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,14 +18,18 @@ public class NotificationImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private SocietyUserRepository societyUserRepository;
+
     @Override
     public Notification addNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
 
     @Override
-    public List<Notification> getAllNotifications(String email) {
-        return notificationRepository.findAllByFlatNo(email);
+    public List<Notification> getAllNotifications() {
+        SocietyUser societyUser = societyUserRepository.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return notificationRepository.findAllByFlatNo(societyUser.getFlatNo());
     }
 
     @Override

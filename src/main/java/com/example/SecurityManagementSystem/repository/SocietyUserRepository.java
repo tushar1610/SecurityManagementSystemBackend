@@ -11,4 +11,6 @@ public interface SocietyUserRepository extends JpaRepository<SocietyUser, Long> 
     Optional<SocietyUser> findByUserUserId(Long userId);
 
     SocietyUser findByFlatNo(String flatNo);
+
+    SocietyUser findByUserEmail(String email);
 }
